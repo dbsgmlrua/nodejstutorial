@@ -14,6 +14,7 @@ public class InputManager : MonoBehaviour
     public void SetCurrentPlayer(PlayerObj p)
     {
         CurrentPlayer = p;
+        CurrentPlayer.PlayerCharacter = true;
         StartCoroutine(nameof(EventListener));
         StartCoroutine(nameof(PushNetwork));
     }
@@ -31,7 +32,7 @@ public class InputManager : MonoBehaviour
                     if (hit.collider.tag == "floor")
                     {
                         if (CurrentPlayer != null)
-                            CurrentPlayer.SetPosition(new Vector3(hit.point.x, 0, hit.point.z));
+                            CurrentPlayer.SetDest(new Vector3(hit.point.x, 0, hit.point.z));
                     }
                 }
             }
@@ -43,7 +44,7 @@ public class InputManager : MonoBehaviour
         while (true)
         {
             NetworkManager.instance.SendPlayerPos(CurrentPlayer.GetPosition());
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.1f);
         }
     }
 }
