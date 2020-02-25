@@ -1,7 +1,7 @@
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-
+var Player = require('./classes/Player.js');
 server.listen(3000);
 
 var clients = [];
@@ -10,7 +10,7 @@ app.get('/', function(req,res){
 });
 
 io.on('connection',function(socket){
-    var CurrentPlayer = {};
+    var CurrentPlayer = new Player();
     CurrentPlayer.Name = 'unknown'
     socket.on('Login', function(data){
         console.log("playerLogin");
@@ -23,10 +23,9 @@ io.on('connection',function(socket){
             socket.emit('login success');
             
             for(var i = 0;i<clients.length;i++){
-                var playerConnected = {
-                    Name:clients[i].Name,
-                    positions:clients[i].positions
-                };
+                var playerConnected = new Player();
+                playerConnected.Name = clients[i].Name;
+                playerConnected.positions = clients[i].positions;
                 socket.emit('other player connected', playerConnected);
                 console.log(CurrentPlayer.Name+'emit: otherPlayer :' +JSON.stringify(playerConnected));
             }
@@ -37,10 +36,9 @@ io.on('connection',function(socket){
     });
     socket.on('play', function(data){
         var pos ={};
-        CurrentPlayer = {
-            Name:data.Name,
-            positions:data.positions
-        }
+        CurrentPlayer.Name = data.Name;
+        CurrentPlayer.positions = data.positions;
+        
         clients.push(CurrentPlayer);
         socket.broadcast.emit('other player connected', CurrentPlayer);
     })
