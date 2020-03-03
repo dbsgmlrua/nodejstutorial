@@ -38,6 +38,7 @@ io.on('connection',function(socket){
         var pos ={};
         CurrentPlayer.Name = data.Name;
         CurrentPlayer.positions = data.positions;
+        CurrentPlayer.rotations = data.rotations;
         
         clients.push(CurrentPlayer);
         socket.broadcast.emit('other player connected', CurrentPlayer);
@@ -45,7 +46,11 @@ io.on('connection',function(socket){
     socket.on('player move', function(data){
         console.log(CurrentPlayer.Name + 'recv: move: ' + JSON.stringify(data));
         CurrentPlayer.positions = data.positions;
+        CurrentPlayer.rotations = data.rotations;
         socket.broadcast.emit('player move', CurrentPlayer);
+    });
+    socket.on('player attack', function(data){
+
     });
     socket.on('disconnect', function(){
         console.log(CurrentPlayer.Name+'disconnected');
